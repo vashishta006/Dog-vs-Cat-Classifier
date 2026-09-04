@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat vs Dog AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #111827, #1f2937);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed #00aaff;
+box-shadow: 0 0 12px #00aaff, inset 0 0 12px rgba(0, 170, 255, 0.15);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: 0.2s
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            color: white;
+        }
+
+        #preview {
+            display: none;
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #00aaff;
+            color: white;
+            box-shadow: 0 0 15px #00aaff;
+            color: #111827;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px #00aaff; 
+        }
+
+        .result {
+            margin-top: 25px;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .confidence {
+            margin-top: 10px;
+            color: #cbd5e1;
+            font-size: 17px;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🐱 Cat vs Dog 🐶</h1>
+
+    <p class="subtitle">
+        Upload an image and let AI identify it.
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <div class="upload-box" id="dropZone">
+
+          <p>📁 Drag & Drop your image here</p>
+          <p>or</p>
+
+          <input
+            type="file"
+            name="image"
+            id="fileInput"
+            accept="image/*"
+            onchange="showPreview(event)"
+            required
+          >
+
+          <img id="preview" alt="Image preview">
+
+        </div>
+
+        <button type="submit">
+            🔍 Predict Image
+        </button>
+
+    </form>
+
+    {% if prediction %}
+
+        <div class="result">
+            {{ prediction }}
+        </div>
+
+        <div class="confidence">
+            Confidence: {{ "%.2f"|format(confidence) }}%
+        </div>
+
+    {% endif %}
+
+    <div class="footer">
+        Powered by TensorFlow & MobileNetV2
+    </div>
+
+</div>
+
+<script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+
+    function showPreview(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+    }
+
+    dropZone.addEventListener("dragover", function(event) {
+        event.preventDefault();
+        dropZone.style.boxShadow = "0 0 25px #00aaff";
+    });
+
+    dropZone.addEventListener("dragleave", function() {
+        dropZone.style.boxShadow =
+            "0 0 12px #00aaff, inset 0 0 12px rgba(0, 170, 255, 0.15)";
+    });
+
+    dropZone.addEventListener("drop", function(event) {
+        event.preventDefault();
+
+        const file = event.dataTransfer.files[0];
+
+        if (file && file.type.startsWith("image/")) {
+            fileInput.files = event.dataTransfer.files;
+
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+
+        dropZone.style.boxShadow =
+            "0 0 12px #00aaff, inset 0 0 12px rgba(0, 170, 255, 0.15)";
+    });
+</script>
+
+</body>
+</html>
