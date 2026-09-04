@@ -1,6 +1,5 @@
 venv/
 venv313/
 dataset/
-*.keras
 __pycache__/
 .vscode/
