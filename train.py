@@ -87,6 +87,13 @@ model.fit(
     epochs=10
 )
 
-model.save("dog_cat_model.keras")
+# Convert model to lightweight TensorFlow Lite format
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
 
-print("FINAL MODEL SAVED!")
+tflite_model = converter.convert()
+
+with open("dog_cat_model.tflite", "wb") as f:
+    f.write(tflite_model)
+
+print("LIGHTWEIGHT MODEL SAVED!")
